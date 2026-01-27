@@ -8,104 +8,104 @@ All colors MUST be HSL.
 
 @layer base {
   :root {
-    /* Kerala-inspired warm, natural palette */
-    --background: 45 30% 97%;
-    --foreground: 150 25% 15%;
+    /* e-Life Society teal/cyan inspired palette */
+    --background: 195 20% 97%;
+    --foreground: 195 50% 15%;
 
-    --card: 45 40% 99%;
-    --card-foreground: 150 25% 15%;
+    --card: 195 25% 99%;
+    --card-foreground: 195 50% 15%;
 
-    --popover: 45 40% 99%;
-    --popover-foreground: 150 25% 15%;
+    --popover: 195 25% 99%;
+    --popover-foreground: 195 50% 15%;
 
-    /* Deep forest green - Kerala's lush nature */
-    --primary: 158 45% 25%;
-    --primary-foreground: 45 30% 97%;
+    /* Deep teal - matching e-Life logo */
+    --primary: 188 75% 28%;
+    --primary-foreground: 195 20% 98%;
 
-    /* Warm cream/beige */
-    --secondary: 42 35% 92%;
-    --secondary-foreground: 150 25% 20%;
+    /* Light teal/cyan */
+    --secondary: 190 30% 92%;
+    --secondary-foreground: 195 50% 20%;
 
-    --muted: 45 20% 93%;
-    --muted-foreground: 150 15% 45%;
+    --muted: 195 15% 93%;
+    --muted-foreground: 195 20% 45%;
 
-    /* Golden saffron accent - empowerment & warmth */
-    --accent: 38 85% 55%;
-    --accent-foreground: 150 25% 15%;
+    /* Bright cyan accent - matching logo gradient */
+    --accent: 185 70% 45%;
+    --accent-foreground: 195 50% 10%;
 
     --destructive: 0 72% 51%;
-    --destructive-foreground: 45 30% 97%;
+    --destructive-foreground: 195 20% 98%;
 
-    --border: 45 25% 88%;
-    --input: 45 25% 88%;
-    --ring: 158 45% 25%;
+    --border: 195 20% 88%;
+    --input: 195 20% 88%;
+    --ring: 188 75% 28%;
 
     --radius: 0.75rem;
 
     /* Custom tokens for e-Life */
-    --kerala-green: 158 45% 25%;
-    --kerala-green-light: 158 35% 45%;
-    --kerala-gold: 38 85% 55%;
-    --kerala-gold-light: 42 80% 70%;
-    --kerala-cream: 45 40% 96%;
-    --kerala-earth: 25 30% 25%;
+    --kerala-green: 188 75% 28%;
+    --kerala-green-light: 185 60% 45%;
+    --kerala-gold: 185 70% 50%;
+    --kerala-gold-light: 190 65% 65%;
+    --kerala-cream: 195 25% 96%;
+    --kerala-earth: 195 40% 20%;
     
-    /* Division colors */
-    --farmelife: 142 50% 35%;
-    --organelife: 85 45% 40%;
-    --foodelife: 25 70% 50%;
-    --entrelife: 280 40% 45%;
-    --embryo: 340 50% 55%;
-    --aval: 200 60% 45%;
-    --pennyekart: 38 85% 55%;
+    /* Division colors - updated for teal theme */
+    --farmelife: 170 50% 35%;
+    --organelife: 160 45% 40%;
+    --foodelife: 180 55% 40%;
+    --entrelife: 200 50% 45%;
+    --embryo: 210 45% 50%;
+    --aval: 175 55% 42%;
+    --pennyekart: 185 70% 45%;
 
-    --sidebar-background: 45 30% 97%;
-    --sidebar-foreground: 150 25% 25%;
-    --sidebar-primary: 158 45% 25%;
-    --sidebar-primary-foreground: 45 30% 97%;
-    --sidebar-accent: 42 35% 92%;
-    --sidebar-accent-foreground: 150 25% 20%;
-    --sidebar-border: 45 25% 88%;
-    --sidebar-ring: 158 45% 25%;
+    --sidebar-background: 195 20% 97%;
+    --sidebar-foreground: 195 50% 20%;
+    --sidebar-primary: 188 75% 28%;
+    --sidebar-primary-foreground: 195 20% 98%;
+    --sidebar-accent: 190 30% 92%;
+    --sidebar-accent-foreground: 195 50% 20%;
+    --sidebar-border: 195 20% 88%;
+    --sidebar-ring: 188 75% 28%;
   }
 
   .dark {
-    --background: 150 25% 8%;
-    --foreground: 45 30% 95%;
+    --background: 195 30% 8%;
+    --foreground: 190 20% 95%;
 
-    --card: 150 20% 12%;
-    --card-foreground: 45 30% 95%;
+    --card: 195 25% 12%;
+    --card-foreground: 190 20% 95%;
 
-    --popover: 150 20% 12%;
-    --popover-foreground: 45 30% 95%;
+    --popover: 195 25% 12%;
+    --popover-foreground: 190 20% 95%;
 
-    --primary: 158 40% 45%;
-    --primary-foreground: 150 25% 8%;
+    --primary: 185 65% 45%;
+    --primary-foreground: 195 30% 8%;
 
-    --secondary: 150 15% 18%;
-    --secondary-foreground: 45 30% 90%;
+    --secondary: 195 20% 18%;
+    --secondary-foreground: 190 20% 90%;
 
-    --muted: 150 15% 18%;
-    --muted-foreground: 45 20% 65%;
+    --muted: 195 20% 18%;
+    --muted-foreground: 190 15% 65%;
 
-    --accent: 38 80% 50%;
-    --accent-foreground: 150 25% 8%;
+    --accent: 185 60% 50%;
+    --accent-foreground: 195 30% 8%;
 
     --destructive: 0 62% 40%;
-    --destructive-foreground: 45 30% 95%;
+    --destructive-foreground: 190 20% 95%;
 
-    --border: 150 15% 20%;
-    --input: 150 15% 20%;
-    --ring: 158 40% 45%;
+    --border: 195 20% 20%;
+    --input: 195 20% 20%;
+    --ring: 185 65% 45%;
 
-    --sidebar-background: 150 25% 8%;
-    --sidebar-foreground: 45 30% 95%;
-    --sidebar-primary: 158 40% 45%;
-    --sidebar-primary-foreground: 150 25% 8%;
-    --sidebar-accent: 150 15% 18%;
-    --sidebar-accent-foreground: 45 30% 90%;
-    --sidebar-border: 150 15% 20%;
-    --sidebar-ring: 158 40% 45%;
+    --sidebar-background: 195 30% 8%;
+    --sidebar-foreground: 190 20% 95%;
+    --sidebar-primary: 185 65% 45%;
+    --sidebar-primary-foreground: 195 30% 8%;
+    --sidebar-accent: 195 20% 18%;
+    --sidebar-accent-foreground: 190 20% 90%;
+    --sidebar-border: 195 20% 20%;
+    --sidebar-ring: 185 65% 45%;
   }
 }
 

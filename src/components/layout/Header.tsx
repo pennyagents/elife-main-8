@@ -1,9 +1,10 @@
 import { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { Menu, X, Leaf, LogIn, LayoutDashboard } from "lucide-react";
+import { Menu, X, LogIn, LayoutDashboard } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/hooks/useAuth";
+import elifeLogo from "@/assets/elife-logo.png";
 
 const navLinks = [
   { href: "/", label: "Home", labelMl: "ഹോം" },
@@ -21,18 +22,12 @@ export function Header() {
     <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="container flex h-16 items-center justify-between">
         {/* Logo */}
-        <Link to="/" className="flex items-center gap-2 group">
-          <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary text-primary-foreground transition-transform group-hover:scale-105">
-            <Leaf className="h-5 w-5" />
-          </div>
-          <div className="flex flex-col">
-            <span className="font-display text-lg font-bold text-primary leading-tight">
-              e-Life Society
-            </span>
-            <span className="text-[10px] text-muted-foreground leading-tight">
-              ഇ-ലൈഫ് സൊസൈറ്റി
-            </span>
-          </div>
+        <Link to="/" className="flex items-center group">
+          <img 
+            src={elifeLogo} 
+            alt="e-Life Society" 
+            className="h-12 w-auto transition-transform group-hover:scale-105"
+          />
         </Link>
 
         {/* Desktop Navigation */}

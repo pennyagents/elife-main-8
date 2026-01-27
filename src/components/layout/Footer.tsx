@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
-import { Leaf, Phone, Mail, MapPin } from "lucide-react";
+import { Phone, Mail, MapPin } from "lucide-react";
+import elifeLogo from "@/assets/elife-logo.png";
 
 export function Footer() {
   return (
@@ -8,18 +9,12 @@ export function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           {/* Brand */}
           <div className="md:col-span-1">
-            <div className="flex items-center gap-2 mb-4">
-              <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary-foreground text-primary">
-                <Leaf className="h-5 w-5" />
-              </div>
-              <div className="flex flex-col">
-                <span className="font-display text-lg font-bold leading-tight">
-                  e-Life Society
-                </span>
-                <span className="text-[10px] opacity-80 leading-tight">
-                  ഇ-ലൈഫ് സൊസൈറ്റി
-                </span>
-              </div>
+            <div className="mb-4">
+              <img 
+                src={elifeLogo} 
+                alt="e-Life Society" 
+                className="h-12 w-auto brightness-0 invert"
+              />
             </div>
             <p className="text-sm opacity-80 leading-relaxed">
               Empowering women across Kerala through structured programs, 
