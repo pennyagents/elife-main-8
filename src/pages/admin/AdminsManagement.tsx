@@ -155,7 +155,7 @@ export default function AdminsManagement() {
           phone: normalizedPhone,
           password_hash: passwordHash,
           full_name: newFullName,
-        });
+        } as any);
 
       if (adminError) throw adminError;
 
@@ -362,12 +362,9 @@ export default function AdminsManagement() {
                   admins.map((admin) => (
                     <TableRow key={admin.id}>
                       <TableCell className="font-medium whitespace-nowrap">
-                        {admin.profile?.full_name || "N/A"}
+                        {admin.full_name || "N/A"}
                       </TableCell>
                       <TableCell className="whitespace-nowrap">{admin.phone || "N/A"}</TableCell>
-                      <TableCell className="truncate max-w-[180px]" title={admin.profile?.email || "N/A"}>
-                        {admin.profile?.email || "N/A"}
-                      </TableCell>
                       <TableCell className="whitespace-nowrap">{admin.division?.name || "N/A"}</TableCell>
                       <TableCell>
                         <span

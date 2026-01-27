@@ -36,7 +36,7 @@ serve(async (req) => {
       // Find admin by phone
       const { data: admin, error: adminError } = await supabase
         .from("admins")
-        .select("id, user_id, password_hash, is_active, division_id")
+        .select("id, user_id, password_hash, is_active, division_id, full_name")
         .eq("phone", normalizedPhone)
         .single();
       
@@ -79,27 +79,12 @@ serve(async (req) => {
         );
       }
       
-      // Get the user's email for Supabase auth
-      const { data: profile, error: profileError } = await supabase
-        .from("profiles")
-        .select("email")
-        .eq("id", admin.user_id)
-        .single();
-      
-      if (profileError || !profile) {
-        console.log("Profile not found:", profileError?.message);
-        return new Response(
-          JSON.stringify({ error: "Account configuration error. Contact Super Admin." }),
-          { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-        );
-      }
-      
       // Generate a custom session token for the admin
-      // Since we're using custom auth, we'll return admin data and a signed token
       const tokenPayload = {
         admin_id: admin.id,
         user_id: admin.user_id,
         division_id: admin.division_id,
+        full_name: admin.full_name,
         exp: Date.now() + (24 * 60 * 60 * 1000), // 24 hours
       };
       
@@ -123,6 +108,7 @@ serve(async (req) => {
             id: admin.id,
             user_id: admin.user_id,
             division_id: admin.division_id,
+            full_name: admin.full_name,
           },
         }),
         { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } }
