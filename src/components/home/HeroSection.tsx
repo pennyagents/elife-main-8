@@ -1,74 +1,91 @@
-import { ArrowRight, Users, Heart, Sprout } from "lucide-react";
+import { ArrowRight, Users, Heart, Sprout, Sparkles } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 
 export function HeroSection() {
   return (
-    <section className="relative overflow-hidden bg-gradient-to-br from-primary/5 via-background to-accent/10 py-20 lg:py-32">
-      {/* Decorative elements */}
-      <div className="absolute top-20 left-10 w-72 h-72 bg-primary/10 rounded-full blur-3xl" />
-      <div className="absolute bottom-10 right-10 w-96 h-96 bg-accent/20 rounded-full blur-3xl" />
+    <section className="relative overflow-hidden bg-gradient-to-b from-secondary via-background to-background py-16 lg:py-28">
+      {/* Animated decorative elements */}
+      <div className="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none">
+        <div className="absolute top-10 left-[10%] w-64 h-64 bg-primary/15 rounded-full blur-3xl animate-pulse" />
+        <div className="absolute top-32 right-[15%] w-48 h-48 bg-accent/20 rounded-full blur-3xl animate-pulse delay-700" />
+        <div className="absolute bottom-20 left-[20%] w-56 h-56 bg-primary/10 rounded-full blur-3xl animate-pulse delay-1000" />
+        <div className="absolute -bottom-10 right-[10%] w-80 h-80 bg-accent/15 rounded-full blur-3xl" />
+      </div>
+      
+      {/* Floating shapes */}
+      <div className="absolute top-20 right-[25%] w-3 h-3 bg-primary/40 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }} />
+      <div className="absolute top-40 left-[30%] w-2 h-2 bg-accent/50 rounded-full animate-bounce" style={{ animationDelay: '0.5s' }} />
+      <div className="absolute bottom-32 right-[35%] w-4 h-4 bg-primary/30 rounded-full animate-bounce" style={{ animationDelay: '0.8s' }} />
       
       <div className="container relative">
-        <div className="max-w-3xl mx-auto text-center">
-          {/* Malayalam tagline */}
-          <p className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-accent/20 text-accent-foreground text-sm font-medium mb-6">
-            <Heart className="h-4 w-4 text-accent" />
+        <div className="max-w-4xl mx-auto text-center">
+          {/* Badge */}
+          <div className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-gradient-to-r from-primary/15 to-accent/15 border border-primary/20 text-primary text-sm font-medium mb-8 shadow-sm">
+            <Sparkles className="h-4 w-4" />
             <span>സ്ത്രീ ശാക്തീകരണം • Women Empowerment</span>
-          </p>
+            <Sparkles className="h-4 w-4" />
+          </div>
           
-          <h1 className="font-display text-4xl md:text-5xl lg:text-6xl font-bold text-foreground leading-tight mb-6">
-            ഓരോ വീടും ഒരു സംരംഭം ,{" "}
-            <span className="text-primary">ഒരു വീട്ടിൽ ഒരു സംരംഭക </span>
+          {/* Main heading with gradient */}
+          <h1 className="font-display text-4xl md:text-5xl lg:text-6xl font-bold leading-tight mb-6">
+            <span className="text-foreground">ഓരോ വീടും ഒരു സംരംഭം,</span>
+            <br />
+            <span className="bg-gradient-to-r from-primary via-accent to-primary bg-clip-text text-transparent">
+              ഒരു വീട്ടിൽ ഒരു സംരംഭക
+            </span>
           </h1>
           
-          <p className="text-lg md:text-xl text-muted-foreground mb-8 leading-relaxed">
+          <p className="text-lg md:text-xl text-muted-foreground mb-10 leading-relaxed max-w-2xl mx-auto">
             e-Life Society is a Kerala-based women empowerment ecosystem supporting 
             housewives through structured programs, training, welfare support, and 
             income-generation initiatives.
           </p>
           
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Button asChild size="lg" className="gap-2">
+          {/* CTA Buttons */}
+          <div className="flex flex-col sm:flex-row gap-4 justify-center mb-16">
+            <Button asChild size="lg" className="gap-2 shadow-lg shadow-primary/25 hover:shadow-xl hover:shadow-primary/30 transition-all">
               <Link to="/programs">
                 View Programs
                 <ArrowRight className="h-4 w-4" />
               </Link>
             </Button>
-            <Button asChild variant="outline" size="lg">
+            <Button asChild variant="outline" size="lg" className="border-2 hover:bg-secondary">
               <Link to="/about">
                 Learn More
               </Link>
             </Button>
           </div>
           
-          {/* Stats */}
-          <div className="mt-16 grid grid-cols-3 gap-8">
-            <div className="text-center">
-              <div className="flex justify-center mb-2">
-                <div className="h-12 w-12 rounded-full bg-primary/10 flex items-center justify-center">
-                  <Users className="h-6 w-6 text-primary" />
+          {/* Stats Cards */}
+          <div className="grid grid-cols-3 gap-4 md:gap-8 max-w-2xl mx-auto">
+            <div className="group bg-card/80 backdrop-blur-sm rounded-2xl p-5 shadow-lg border border-border/50 hover:shadow-xl hover:border-primary/30 transition-all hover:-translate-y-1">
+              <div className="flex justify-center mb-3">
+                <div className="h-14 w-14 rounded-xl bg-gradient-to-br from-primary/20 to-primary/10 flex items-center justify-center group-hover:scale-110 transition-transform">
+                  <Users className="h-7 w-7 text-primary" />
                 </div>
               </div>
-              <p className="text-2xl font-bold text-foreground">7</p>
+              <p className="text-3xl font-bold text-foreground">7</p>
               <p className="text-sm text-muted-foreground">Divisions</p>
             </div>
-            <div className="text-center">
-              <div className="flex justify-center mb-2">
-                <div className="h-12 w-12 rounded-full bg-accent/20 flex items-center justify-center">
-                  <Heart className="h-6 w-6 text-accent" />
+            
+            <div className="group bg-card/80 backdrop-blur-sm rounded-2xl p-5 shadow-lg border border-border/50 hover:shadow-xl hover:border-accent/30 transition-all hover:-translate-y-1">
+              <div className="flex justify-center mb-3">
+                <div className="h-14 w-14 rounded-xl bg-gradient-to-br from-accent/25 to-accent/10 flex items-center justify-center group-hover:scale-110 transition-transform">
+                  <Heart className="h-7 w-7 text-accent" />
                 </div>
               </div>
-              <p className="text-2xl font-bold text-foreground">100+</p>
+              <p className="text-3xl font-bold text-foreground">100+</p>
               <p className="text-sm text-muted-foreground">Programs</p>
             </div>
-            <div className="text-center">
-              <div className="flex justify-center mb-2">
-                <div className="h-12 w-12 rounded-full bg-primary/10 flex items-center justify-center">
-                  <Sprout className="h-6 w-6 text-primary" />
+            
+            <div className="group bg-card/80 backdrop-blur-sm rounded-2xl p-5 shadow-lg border border-border/50 hover:shadow-xl hover:border-primary/30 transition-all hover:-translate-y-1">
+              <div className="flex justify-center mb-3">
+                <div className="h-14 w-14 rounded-xl bg-gradient-to-br from-primary/20 to-primary/10 flex items-center justify-center group-hover:scale-110 transition-transform">
+                  <Sprout className="h-7 w-7 text-primary" />
                 </div>
               </div>
-              <p className="text-2xl font-bold text-foreground">Kerala</p>
+              <p className="text-3xl font-bold text-foreground">Kerala</p>
               <p className="text-sm text-muted-foreground">Wide Reach</p>
             </div>
           </div>
