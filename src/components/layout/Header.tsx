@@ -54,17 +54,21 @@ export function Header() {
           {/* Auth buttons */}
           {!isLoading && (
             user ? (
-              <Button asChild variant="outline" size="sm" className="ml-2">
+              <Button asChild size="sm" className="ml-2 bg-accent text-accent-foreground hover:bg-accent/90">
                 <Link to="/dashboard">
-                  <LayoutDashboard className="h-4 w-4 mr-2" />
-                  Dashboard
+                  <span className="p-1 rounded bg-accent text-accent-foreground">
+                    <LayoutDashboard className="h-4 w-4" />
+                  </span>
+                  <span className="ml-2">Dashboard</span>
                 </Link>
               </Button>
             ) : (
-              <Button asChild size="sm" className="ml-2">
+              <Button asChild size="sm" className="ml-2 bg-accent text-accent-foreground hover:bg-accent/90">
                 <Link to="/auth">
-                  <LogIn className="h-4 w-4 mr-2" />
-                  Sign In
+                  <span className="p-1 rounded bg-accent text-accent-foreground">
+                    <LogIn className="h-4 w-4" />
+                  </span>
+                  <span className="ml-2">Sign In</span>
                 </Link>
               </Button>
             )
@@ -75,7 +79,7 @@ export function Header() {
         <Button
           variant="ghost"
           size="icon"
-          className="md:hidden"
+          className="md:hidden bg-accent text-accent-foreground hover:bg-accent/90"
           onClick={() => setIsMenuOpen(!isMenuOpen)}
         >
           {isMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
@@ -109,18 +113,22 @@ export function Header() {
                 <Link
                   to="/dashboard"
                   onClick={() => setIsMenuOpen(false)}
-                  className="px-4 py-3 rounded-lg text-sm font-medium bg-secondary text-foreground flex items-center gap-2"
+                  className="px-4 py-3 rounded-lg text-sm font-medium bg-accent text-accent-foreground flex items-center gap-2"
                 >
-                  <LayoutDashboard className="h-4 w-4" />
+                  <span className="p-1 rounded bg-accent text-accent-foreground">
+                    <LayoutDashboard className="h-4 w-4" />
+                  </span>
                   Dashboard
                 </Link>
               ) : (
                 <Link
                   to="/auth"
                   onClick={() => setIsMenuOpen(false)}
-                  className="px-4 py-3 rounded-lg text-sm font-medium bg-primary text-primary-foreground flex items-center gap-2"
+                  className="px-4 py-3 rounded-lg text-sm font-medium bg-accent text-accent-foreground flex items-center gap-2"
                 >
-                  <LogIn className="h-4 w-4" />
+                  <span className="p-1 rounded bg-accent text-accent-foreground">
+                    <LogIn className="h-4 w-4" />
+                  </span>
                   Sign In
                 </Link>
               )
