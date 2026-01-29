@@ -242,6 +242,7 @@ export default function ProgramPublicPage() {
         );
 
       case "radio":
+      case "multiple_choice": // Legacy support for old questions saved as multiple_choice
         return (
           <RadioGroup
             value={value || ""}
