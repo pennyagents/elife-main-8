@@ -184,9 +184,11 @@ export function BulkAgentFormDialog({
   }, [open]);
 
   // Update ward options when panchayath changes (for single form)
+  // Also re-run when agent changes to ensure options are loaded for editing
   useEffect(() => {
-    if (selectedSinglePanchayath) {
-      const panchayath = panchayaths.find(p => p.id === selectedSinglePanchayath);
+    const panchayathId = selectedSinglePanchayath || agent?.panchayath_id;
+    if (panchayathId && panchayaths.length > 0) {
+      const panchayath = panchayaths.find(p => p.id === panchayathId);
       if (panchayath?.ward) {
         const wardCount = parseInt(panchayath.ward, 10);
         if (!isNaN(wardCount) && wardCount > 0) {
@@ -196,8 +198,11 @@ export function BulkAgentFormDialog({
         }
       }
     }
-    setWardOptions([]);
-  }, [selectedSinglePanchayath, panchayaths]);
+    // Only clear if we have panchayaths loaded but none selected
+    if (panchayaths.length > 0 && !panchayathId) {
+      setWardOptions([]);
+    }
+  }, [selectedSinglePanchayath, panchayaths, agent]);
 
   // Update ward options when panchayath changes (for bulk form)
   useEffect(() => {
