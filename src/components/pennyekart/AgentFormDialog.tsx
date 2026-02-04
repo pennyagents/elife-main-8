@@ -240,15 +240,15 @@ export function AgentFormDialog({ open, onOpenChange, agent, onSuccess }: AgentF
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-[95vw] sm:max-w-[500px] max-h-[90vh] flex flex-col p-0 gap-0">
-        <DialogHeader className="px-4 pt-4 sm:px-6 sm:pt-6 text-left shrink-0">
+      <DialogContent className="max-w-[95vw] sm:max-w-[500px] h-[85vh] sm:h-auto sm:max-h-[85vh] flex flex-col p-0 gap-0 overflow-hidden">
+        <DialogHeader className="px-4 pt-4 sm:px-6 sm:pt-6 text-left flex-shrink-0">
           <DialogTitle className="text-lg">{isEditing ? "Edit Agent" : "Add New Agent"}</DialogTitle>
           <DialogDescription className="text-sm">
             {isEditing ? "Update agent details" : "Add a new agent to the hierarchy"}
           </DialogDescription>
         </DialogHeader>
 
-        <div className="flex-1 overflow-y-auto min-h-0 px-4 sm:px-6 py-4 pb-6">
+        <div className="flex-1 overflow-y-auto min-h-0 px-4 sm:px-6 py-4 scrollbar-thin scrollbar-thumb-border scrollbar-track-transparent" style={{ overflowY: 'scroll' }}>
           <Form {...form}>
               <form id="agent-form" onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
                 <FormField
@@ -493,7 +493,7 @@ export function AgentFormDialog({ open, onOpenChange, agent, onSuccess }: AgentF
             </Form>
         </div>
 
-        <DialogFooter className="flex-col-reverse gap-2 sm:flex-row sm:gap-2 px-4 pb-4 sm:px-6 sm:pb-6 border-t pt-4 shrink-0">
+        <DialogFooter className="flex-col-reverse gap-2 sm:flex-row sm:gap-2 px-4 py-4 sm:px-6 border-t flex-shrink-0 bg-background">
           <Button 
             type="button" 
             variant="outline" 
