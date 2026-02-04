@@ -237,6 +237,8 @@ export type Database = {
           name: string
           panchayath_id: string
           parent_agent_id: string | null
+          responsible_panchayath_ids: string[] | null
+          responsible_wards: string[] | null
           role: Database["public"]["Enums"]["pennyekart_agent_role"]
           updated_at: string | null
           ward: string
@@ -251,6 +253,8 @@ export type Database = {
           name: string
           panchayath_id: string
           parent_agent_id?: string | null
+          responsible_panchayath_ids?: string[] | null
+          responsible_wards?: string[] | null
           role: Database["public"]["Enums"]["pennyekart_agent_role"]
           updated_at?: string | null
           ward: string
@@ -265,6 +269,8 @@ export type Database = {
           name?: string
           panchayath_id?: string
           parent_agent_id?: string | null
+          responsible_panchayath_ids?: string[] | null
+          responsible_wards?: string[] | null
           role?: Database["public"]["Enums"]["pennyekart_agent_role"]
           updated_at?: string | null
           ward?: string

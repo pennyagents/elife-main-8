@@ -182,6 +182,8 @@ export function AgentFormDialog({ open, onOpenChange, agent, onSuccess }: AgentF
         customer_count: values.customer_count,
         is_active: true,
         created_by: null,
+        responsible_panchayath_ids: [],
+        responsible_wards: [],
       };
       const { error } = await createAgent(agentData);
       if (error) {

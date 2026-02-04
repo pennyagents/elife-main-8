@@ -16,6 +16,9 @@ export interface PennyekartAgent {
   created_at: string;
   updated_at: string;
   created_by: string | null;
+  // Responsibility scope
+  responsible_panchayath_ids: string[]; // For Team Leaders - panchayaths they manage
+  responsible_wards: string[]; // For Coordinators - wards they manage
   panchayath?: {
     name: string;
   };
