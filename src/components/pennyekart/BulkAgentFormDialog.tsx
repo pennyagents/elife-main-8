@@ -28,7 +28,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { ScrollArea } from "@/components/ui/scroll-area";
+// ScrollArea removed - using native overflow-y-auto for better flex container compatibility
 import { Checkbox } from "@/components/ui/checkbox";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
@@ -447,7 +447,7 @@ export function BulkAgentFormDialog({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="w-[95vw] max-w-[650px] max-h-[85vh] flex flex-col p-0 gap-0">
+      <DialogContent className="w-[95vw] max-w-[650px] h-[90vh] sm:h-auto sm:max-h-[85vh] flex flex-col p-0 gap-0 overflow-hidden">
         <DialogHeader className="px-4 pt-4 pb-2 sm:px-6 sm:pt-6 flex-shrink-0">
           <DialogTitle>{isEditing ? "Edit Agent" : "Add Agents"}</DialogTitle>
           <DialogDescription className="text-xs sm:text-sm">
@@ -456,8 +456,8 @@ export function BulkAgentFormDialog({
         </DialogHeader>
 
         {isEditing ? (
-          <div className="flex-1 overflow-hidden flex flex-col">
-            <ScrollArea className="flex-1 px-4 sm:px-6">
+          <div className="flex-1 min-h-0 flex flex-col overflow-hidden">
+            <div className="flex-1 overflow-y-auto px-4 sm:px-6" style={{ minHeight: 0 }}>
               <Form {...singleForm}>
                 <form onSubmit={singleForm.handleSubmit(onSubmitSingle)} className="space-y-3 pb-4">
                   <SingleFormContent
@@ -477,7 +477,7 @@ export function BulkAgentFormDialog({
                   />
                 </form>
               </Form>
-            </ScrollArea>
+            </div>
             <div className="flex justify-end gap-2 px-4 py-3 sm:px-6 sm:py-4 border-t bg-background flex-shrink-0">
               <Button type="button" variant="outline" size="sm" onClick={() => onOpenChange(false)}>
                 Cancel
@@ -489,7 +489,7 @@ export function BulkAgentFormDialog({
             </div>
           </div>
         ) : (
-          <Tabs value={activeTab} onValueChange={(v) => setActiveTab(v as "single" | "bulk")} className="flex-1 overflow-hidden flex flex-col">
+          <Tabs value={activeTab} onValueChange={(v) => setActiveTab(v as "single" | "bulk")} className="flex-1 min-h-0 flex flex-col overflow-hidden">
             <TabsList className="grid w-full grid-cols-2 mx-4 sm:mx-6 mt-2 flex-shrink-0" style={{ width: 'calc(100% - 2rem)' }}>
               <TabsTrigger value="single" className="flex items-center gap-1.5 text-xs sm:text-sm">
                 <UserPlus className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
@@ -501,8 +501,8 @@ export function BulkAgentFormDialog({
               </TabsTrigger>
             </TabsList>
 
-            <TabsContent value="single" className="flex-1 overflow-hidden flex flex-col mt-0 data-[state=inactive]:hidden">
-              <ScrollArea className="flex-1 px-4 sm:px-6 pt-3">
+            <TabsContent value="single" className="flex-1 min-h-0 flex flex-col mt-0 data-[state=inactive]:hidden overflow-hidden">
+              <div className="flex-1 overflow-y-auto px-4 sm:px-6 pt-3" style={{ minHeight: 0 }}>
                 <Form {...singleForm}>
                   <form className="space-y-3 pb-4">
                     <SingleFormContent
@@ -522,7 +522,7 @@ export function BulkAgentFormDialog({
                     />
                   </form>
                 </Form>
-              </ScrollArea>
+              </div>
               <div className="flex justify-end gap-2 px-4 py-3 sm:px-6 sm:py-4 border-t bg-background flex-shrink-0">
                 <Button type="button" variant="outline" size="sm" onClick={() => onOpenChange(false)}>
                   Cancel
@@ -534,8 +534,8 @@ export function BulkAgentFormDialog({
               </div>
             </TabsContent>
 
-            <TabsContent value="bulk" className="flex-1 overflow-hidden flex flex-col mt-0 data-[state=inactive]:hidden">
-              <ScrollArea className="flex-1 px-4 sm:px-6 pt-3">
+            <TabsContent value="bulk" className="flex-1 min-h-0 flex flex-col mt-0 data-[state=inactive]:hidden overflow-hidden">
+              <div className="flex-1 overflow-y-auto px-4 sm:px-6 pt-3" style={{ minHeight: 0 }}>
                 <Form {...bulkForm}>
                   <form className="space-y-3 pb-4">
                     <BulkFormContent
@@ -555,7 +555,7 @@ export function BulkAgentFormDialog({
                     />
                   </form>
                 </Form>
-              </ScrollArea>
+              </div>
               <div className="flex justify-end gap-2 px-4 py-3 sm:px-6 sm:py-4 border-t bg-background flex-shrink-0">
                 <Button type="button" variant="outline" size="sm" onClick={() => onOpenChange(false)}>
                   Cancel
