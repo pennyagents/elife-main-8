@@ -16,6 +16,8 @@ export type Database = {
     Tables: {
       admins: {
         Row: {
+          access_all_divisions: boolean
+          additional_division_ids: string[]
           created_at: string | null
           created_by: string | null
           division_id: string
@@ -27,6 +29,8 @@ export type Database = {
           user_id: string | null
         }
         Insert: {
+          access_all_divisions?: boolean
+          additional_division_ids?: string[]
           created_at?: string | null
           created_by?: string | null
           division_id: string
@@ -38,6 +42,8 @@ export type Database = {
           user_id?: string | null
         }
         Update: {
+          access_all_divisions?: boolean
+          additional_division_ids?: string[]
           created_at?: string | null
           created_by?: string | null
           division_id?: string

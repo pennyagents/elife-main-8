@@ -40,8 +40,10 @@ import {
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
-import { Loader2, Plus, ArrowLeft, AlertCircle, Pencil, Trash2 } from "lucide-react";
+import { Loader2, Plus, ArrowLeft, AlertCircle, Pencil, Trash2, Shield } from "lucide-react";
 import { Link } from "react-router-dom";
+import { AdminPermissionsDialog } from "@/components/admin/AdminPermissionsDialog";
+import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
 
 interface Admin {
@@ -52,6 +54,8 @@ interface Admin {
   created_at: string;
   phone?: string;
   full_name?: string;
+  access_all_divisions?: boolean;
+  additional_division_ids?: string[];
   division?: {
     name: string;
   };
@@ -88,6 +92,10 @@ export default function AdminsManagement() {
 
   // Delete state
   const [deletingAdmin, setDeletingAdmin] = useState<Admin | null>(null);
+
+  // Permissions state
+  const [permissionsAdmin, setPermissionsAdmin] = useState<Admin | null>(null);
+  const [isPermissionsOpen, setIsPermissionsOpen] = useState(false);
 
   const { user } = useAuth();
   const { toast } = useToast();
@@ -474,15 +482,17 @@ export default function AdminsManagement() {
                   <TableHead className="w-[180px]">Name</TableHead>
                   <TableHead className="w-[150px]">Phone</TableHead>
                   <TableHead className="w-[150px]">Division</TableHead>
+                  <TableHead className="w-[120px]">Permissions</TableHead>
                   <TableHead className="w-[100px]">Status</TableHead>
                   <TableHead className="w-[120px]">Created</TableHead>
+                  <TableHead className="w-[120px] text-right">Actions</TableHead>
                   <TableHead className="w-[100px] text-right">Actions</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
                 {admins.length === 0 ? (
                   <TableRow>
-                    <TableCell colSpan={6} className="text-center py-8 text-muted-foreground">
+                    <TableCell colSpan={7} className="text-center py-8 text-muted-foreground">
                       No admins found. Create your first admin to get started.
                     </TableCell>
                   </TableRow>
@@ -494,6 +504,31 @@ export default function AdminsManagement() {
                       </TableCell>
                       <TableCell className="whitespace-nowrap">{admin.phone || "N/A"}</TableCell>
                       <TableCell className="whitespace-nowrap">{admin.division?.name || "N/A"}</TableCell>
+                      <TableCell>
+                        <div className="flex items-center gap-1.5">
+                          {admin.access_all_divisions ? (
+                            <Badge variant="default" className="text-[10px]">All Divisions</Badge>
+                          ) : (admin.additional_division_ids?.length ?? 0) > 0 ? (
+                            <Badge variant="secondary" className="text-[10px]">
+                              +{admin.additional_division_ids!.length} Division{admin.additional_division_ids!.length !== 1 ? "s" : ""}
+                            </Badge>
+                          ) : (
+                            <span className="text-xs text-muted-foreground">Primary only</span>
+                          )}
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            className="h-6 w-6"
+                            onClick={() => {
+                              setPermissionsAdmin(admin);
+                              setIsPermissionsOpen(true);
+                            }}
+                            title="Manage permissions"
+                          >
+                            <Shield className="h-3.5 w-3.5" />
+                          </Button>
+                        </div>
+                      </TableCell>
                       <TableCell>
                         <span
                           className={`inline-flex px-2 py-1 text-xs font-medium rounded-full whitespace-nowrap ${
@@ -680,6 +715,18 @@ export default function AdminsManagement() {
             </AlertDialogFooter>
           </AlertDialogContent>
         </AlertDialog>
+
+        {/* Permissions Dialog */}
+        <AdminPermissionsDialog
+          open={isPermissionsOpen}
+          onOpenChange={(open) => {
+            setIsPermissionsOpen(open);
+            if (!open) setPermissionsAdmin(null);
+          }}
+          admin={permissionsAdmin}
+          divisions={divisions}
+          onSaved={fetchAdmins}
+        />
       </div>
     </Layout>
   );
