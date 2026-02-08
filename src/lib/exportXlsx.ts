@@ -17,11 +17,13 @@ export function exportRegistrationsToXlsx(
   // Create header row with fixed fields first
   const headers = [
     "#",
+    "Rank",
     "Registration Date",
     "Name",
     "Mobile Number",
     "Panchayath",
     "Ward",
+    "Score %",
     ...sortedQuestions.map((q) => q.question_text),
   ];
 
@@ -32,6 +34,7 @@ export function exportRegistrationsToXlsx(
 
     const row: any[] = [
       index + 1,
+      (reg as any).rank != null ? (reg as any).rank : "-",
       new Date(reg.created_at).toLocaleString("en-IN", {
         dateStyle: "medium",
         timeStyle: "short",
@@ -40,6 +43,7 @@ export function exportRegistrationsToXlsx(
       fixedData.mobile || "",
       fixedData.panchayath_name || "",
       fixedData.ward ? `Ward ${fixedData.ward}` : "",
+      (reg as any).percentage != null ? `${(reg as any).percentage.toFixed(1)}%` : "-",
     ];
 
     sortedQuestions.forEach((question) => {

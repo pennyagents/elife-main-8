@@ -24,12 +24,15 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Download, Users, Eye, Loader2, Star, CheckCircle2, Clock, Filter, X } from "lucide-react";
+import { Download, Users, Eye, Loader2, Star, CheckCircle2, Clock, Filter, X, Trophy, Save } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { ProgramFormQuestion, ProgramRegistration } from "@/hooks/usePrograms";
 import { RegistrationVerification } from "./RegistrationVerification";
 import { exportRegistrationsToXlsx } from "@/lib/exportXlsx";
 import { format } from "date-fns";
+import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/hooks/useAuth";
+import { useToast } from "@/hooks/use-toast";
 
 interface RegistrationsTableProps {
   programName: string;
@@ -59,6 +62,12 @@ export function RegistrationsTable({
   const [statusFilter, setStatusFilter] = useState("all");
   const [minPercent, setMinPercent] = useState<string>("");
   const [maxPercent, setMaxPercent] = useState<string>("");
+  const [minRank, setMinRank] = useState<string>("");
+  const [maxRank, setMaxRank] = useState<string>("");
+  const [editingRanks, setEditingRanks] = useState<Record<string, string>>({});
+  const [savingRank, setSavingRank] = useState<string | null>(null);
+  const { adminToken } = useAuth();
+  const { toast } = useToast();
 
   const sortedQuestions = [...questions].sort((a, b) => a.sort_order - b.sort_order);
 
@@ -99,11 +108,22 @@ export function RegistrationsTable({
         } else if ((hasMinFilter || hasMaxFilter) && status !== "verified") {
           return false; // Hide unverified when filtering by percentage
         }
+
+        // Rank filter (manual inputs)
+        const hasMinRankFilter = minRank !== "" && !isNaN(Number(minRank));
+        const hasMaxRankFilter = maxRank !== "" && !isNaN(Number(maxRank));
+        
+        if (hasMinRankFilter || hasMaxRankFilter) {
+          const rk = (r as any).rank;
+          if (rk === null || rk === undefined) return false; // No rank assigned
+          if (hasMinRankFilter && rk < Number(minRank)) return false;
+          if (hasMaxRankFilter && rk > Number(maxRank)) return false;
+        }
       }
       return true;
     });
 
-    // Sort by percentage descending for ranking (verified first)
+    // Sort by rank (if set), then by percentage descending for verified
     if (verificationEnabled) {
       filtered.sort((a, b) => {
         const aVerified = (a as any).verification_status === "verified";
@@ -111,6 +131,15 @@ export function RegistrationsTable({
         if (aVerified && !bVerified) return -1;
         if (!aVerified && bVerified) return 1;
         if (aVerified && bVerified) {
+          // Sort by manual rank first (if both have rank)
+          const aRank = (a as any).rank;
+          const bRank = (b as any).rank;
+          if (aRank != null && bRank != null) {
+            return aRank - bRank;
+          }
+          if (aRank != null) return -1;
+          if (bRank != null) return 1;
+          // Otherwise by percentage
           return ((b as any).percentage || 0) - ((a as any).percentage || 0);
         }
         return 0;
@@ -118,22 +147,62 @@ export function RegistrationsTable({
     }
 
     return filtered;
-  }, [registrations, panchayathFilter, statusFilter, minPercent, maxPercent, verificationEnabled]);
+  }, [registrations, panchayathFilter, statusFilter, minPercent, maxPercent, minRank, maxRank, verificationEnabled]);
 
-  // Calculate ranks for verified registrations
-  const rankedRegistrations = useMemo(() => {
-    if (!verificationEnabled) return new Map<string, number>();
-    
-    const verifiedSorted = [...registrations]
-      .filter((r) => (r as any).verification_status === "verified")
-      .sort((a, b) => ((b as any).percentage || 0) - ((a as any).percentage || 0));
-    
-    const rankMap = new Map<string, number>();
-    verifiedSorted.forEach((r, idx) => {
-      rankMap.set(r.id, idx + 1);
-    });
-    return rankMap;
-  }, [registrations, verificationEnabled]);
+  // Save rank for a registration
+  const handleSaveRank = async (registrationId: string) => {
+    if (!adminToken) {
+      toast({ title: "Error", description: "You must be logged in as admin", variant: "destructive" });
+      return;
+    }
+
+    setSavingRank(registrationId);
+    try {
+      const rankValue = editingRanks[registrationId];
+      const response = await supabase.functions.invoke("admin-registrations", {
+        method: "PUT",
+        headers: { "x-admin-token": adminToken },
+        body: {
+          registration_id: registrationId,
+          rank: rankValue === "" ? null : parseInt(rankValue),
+        },
+      });
+
+      if (response.error || response.data?.error) {
+        throw new Error(response.error?.message || response.data?.error || "Failed to save rank");
+      }
+
+      toast({ title: "Rank saved", description: `Rank updated to ${rankValue || "none"}` });
+      setEditingRanks((prev) => {
+        const next = { ...prev };
+        delete next[registrationId];
+        return next;
+      });
+      onRefresh?.();
+    } catch (err: any) {
+      toast({ title: "Error", description: err.message, variant: "destructive" });
+    } finally {
+      setSavingRank(null);
+    }
+  };
+
+  const getRankValue = (registration: ProgramRegistration) => {
+    const id = registration.id;
+    if (editingRanks[id] !== undefined) return editingRanks[id];
+    const dbRank = (registration as any).rank;
+    return dbRank != null ? String(dbRank) : "";
+  };
+
+  const handleRankChange = (registrationId: string, value: string) => {
+    setEditingRanks((prev) => ({ ...prev, [registrationId]: value }));
+  };
+
+  const isRankEdited = (registrationId: string, dbRank: number | null) => {
+    if (editingRanks[registrationId] === undefined) return false;
+    const currentValue = editingRanks[registrationId];
+    const dbValue = dbRank != null ? String(dbRank) : "";
+    return currentValue !== dbValue;
+  };
 
   const handleExport = () => {
     setIsExporting(true);
@@ -269,23 +338,24 @@ export function RegistrationsTable({
                       <SelectItem value="pending">Pending</SelectItem>
                     </SelectContent>
                   </Select>
-                  <div className="flex items-center gap-1">
+                  <div className="flex items-center gap-1" title="Score % range">
+                    <span className="text-xs text-muted-foreground">%:</span>
                     <Input
                       type="number"
-                      placeholder="Min %"
+                      placeholder="Min"
                       value={minPercent}
                       onChange={(e) => setMinPercent(e.target.value)}
-                      className="w-16 h-8 text-xs"
+                      className="w-14 h-8 text-xs"
                       min={0}
                       max={100}
                     />
                     <span className="text-xs text-muted-foreground">-</span>
                     <Input
                       type="number"
-                      placeholder="Max %"
+                      placeholder="Max"
                       value={maxPercent}
                       onChange={(e) => setMaxPercent(e.target.value)}
-                      className="w-16 h-8 text-xs"
+                      className="w-14 h-8 text-xs"
                       min={0}
                       max={100}
                     />
@@ -295,6 +365,36 @@ export function RegistrationsTable({
                         size="icon"
                         className="h-6 w-6"
                         onClick={() => { setMinPercent(""); setMaxPercent(""); }}
+                      >
+                        <X className="h-3 w-3" />
+                      </Button>
+                    )}
+                  </div>
+                  <div className="flex items-center gap-1" title="Rank range">
+                    <Trophy className="h-3 w-3 text-muted-foreground" />
+                    <Input
+                      type="number"
+                      placeholder="Min"
+                      value={minRank}
+                      onChange={(e) => setMinRank(e.target.value)}
+                      className="w-14 h-8 text-xs"
+                      min={1}
+                    />
+                    <span className="text-xs text-muted-foreground">-</span>
+                    <Input
+                      type="number"
+                      placeholder="Max"
+                      value={maxRank}
+                      onChange={(e) => setMaxRank(e.target.value)}
+                      className="w-14 h-8 text-xs"
+                      min={1}
+                    />
+                    {(minRank || maxRank) && (
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="h-6 w-6"
+                        onClick={() => { setMinRank(""); setMaxRank(""); }}
                       >
                         <X className="h-3 w-3" />
                       </Button>
@@ -341,7 +441,9 @@ export function RegistrationsTable({
                   {filteredRegistrations.map((registration, index) => {
                     const verification = verificationEnabled ? getVerificationStatus(registration) : null;
                     const StatusIcon = verification?.icon;
-                    const rank = rankedRegistrations.get(registration.id);
+                    const dbRank = (registration as any).rank;
+                    const rankValue = getRankValue(registration);
+                    const isEdited = isRankEdited(registration.id, dbRank);
 
                     return (
                       <TableRow key={registration.id}>
@@ -361,16 +463,35 @@ export function RegistrationsTable({
                         {verificationEnabled && verification && StatusIcon && (
                           <>
                             <TableCell className="text-center">
-                              {rank ? (
-                                <Badge 
-                                  variant="outline" 
-                                  className={rank <= 3 ? "bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-400 font-bold" : ""}
-                                >
-                                  #{rank}
-                                </Badge>
-                              ) : (
-                                <span className="text-muted-foreground text-xs">-</span>
-                              )}
+                              <div className="flex items-center justify-center gap-1">
+                                <Input
+                                  type="number"
+                                  value={rankValue}
+                                  onChange={(e) => handleRankChange(registration.id, e.target.value)}
+                                  placeholder="-"
+                                  className={`w-14 h-7 text-xs text-center ${
+                                    rankValue && parseInt(rankValue) <= 3 
+                                      ? "border-amber-400 bg-amber-50 dark:bg-amber-950/30" 
+                                      : ""
+                                  }`}
+                                  min={1}
+                                />
+                                {isEdited && (
+                                  <Button
+                                    variant="ghost"
+                                    size="icon"
+                                    className="h-6 w-6"
+                                    onClick={() => handleSaveRank(registration.id)}
+                                    disabled={savingRank === registration.id}
+                                  >
+                                    {savingRank === registration.id ? (
+                                      <Loader2 className="h-3 w-3 animate-spin" />
+                                    ) : (
+                                      <Save className="h-3 w-3" />
+                                    )}
+                                  </Button>
+                                )}
+                              </div>
                             </TableCell>
                             <TableCell className="text-center">
                               <Badge 

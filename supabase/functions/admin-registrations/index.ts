@@ -47,10 +47,10 @@ Deno.serve(async (req) => {
 
     const url = new URL(req.url);
 
-    // Handle PUT for verification updates
+    // Handle PUT for verification updates or rank updates
     if (req.method === "PUT") {
       const body = await req.json();
-      const { registration_id, verification_scores, total_score, max_score, percentage } = body;
+      const { registration_id, verification_scores, total_score, max_score, percentage, rank } = body;
 
       if (!registration_id) {
         return new Response(
@@ -94,24 +94,35 @@ Deno.serve(async (req) => {
         );
       }
 
-      // Update the registration with verification data
+      // Build update object based on what's provided
+      const updateData: Record<string, any> = {};
+
+      // If it's a verification update
+      if (verification_scores !== undefined) {
+        updateData.verification_scores = verification_scores;
+        updateData.total_score = total_score;
+        updateData.max_score = max_score;
+        updateData.percentage = Math.round(percentage * 100) / 100;
+        updateData.verified_by = adminId;
+        updateData.verified_at = new Date().toISOString();
+        updateData.verification_status = "verified";
+      }
+
+      // If it's a rank update
+      if (rank !== undefined) {
+        updateData.rank = rank === null || rank === "" ? null : parseInt(rank);
+      }
+
+      // Update the registration
       const { error: updateError } = await supabase
         .from("program_registrations")
-        .update({
-          verification_scores,
-          total_score,
-          max_score,
-          percentage: Math.round(percentage * 100) / 100,
-          verified_by: adminId,
-          verified_at: new Date().toISOString(),
-          verification_status: "verified",
-        })
+        .update(updateData)
         .eq("id", registration_id);
 
       if (updateError) {
-        console.error("Error updating verification:", updateError);
+        console.error("Error updating registration:", updateError);
         return new Response(
-          JSON.stringify({ error: "Failed to save verification" }),
+          JSON.stringify({ error: "Failed to update registration" }),
           { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
         );
       }

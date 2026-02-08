@@ -497,6 +497,7 @@ export type Database = {
           max_score: number | null
           percentage: number | null
           program_id: string
+          rank: number | null
           total_score: number | null
           verification_scores: Json | null
           verification_status: string
@@ -510,6 +511,7 @@ export type Database = {
           max_score?: number | null
           percentage?: number | null
           program_id: string
+          rank?: number | null
           total_score?: number | null
           verification_scores?: Json | null
           verification_status?: string
@@ -523,6 +525,7 @@ export type Database = {
           max_score?: number | null
           percentage?: number | null
           program_id?: string
+          rank?: number | null
           total_score?: number | null
           verification_scores?: Json | null
           verification_status?: string
