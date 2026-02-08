@@ -9,6 +9,7 @@ interface AdminData {
   id: string;
   user_id: string;
   division_id: string;
+  full_name?: string | null;
   access_all_divisions?: boolean;
   additional_division_ids?: string[];
 }
@@ -95,6 +96,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             id: data.admin.id,
             user_id: data.admin.user_id,
             division_id: data.admin.division_id,
+            full_name: data.admin.full_name,
             access_all_divisions: data.admin.access_all_divisions,
             additional_division_ids: data.admin.additional_division_ids,
           };

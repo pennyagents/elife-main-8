@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -17,7 +17,14 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { Download, Users, Eye, Loader2, Star, CheckCircle2, Clock } from "lucide-react";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Download, Users, Eye, Loader2, Star, CheckCircle2, Clock, Filter } from "lucide-react";
 import { ProgramFormQuestion, ProgramRegistration } from "@/hooks/usePrograms";
 import { RegistrationVerification } from "./RegistrationVerification";
 import { exportRegistrationsToXlsx } from "@/lib/exportXlsx";
@@ -47,13 +54,42 @@ export function RegistrationsTable({
     null
   );
   const [isExporting, setIsExporting] = useState(false);
+  const [panchayathFilter, setPanchayathFilter] = useState("all");
+  const [statusFilter, setStatusFilter] = useState("all");
 
   const sortedQuestions = [...questions].sort((a, b) => a.sort_order - b.sort_order);
+
+  // Extract unique panchayaths from registrations
+  const panchayaths = useMemo(() => {
+    const set = new Set<string>();
+    registrations.forEach((r) => {
+      const answers = r.answers as Record<string, any>;
+      const name = answers._fixed?.panchayath_name;
+      if (name) set.add(name);
+    });
+    return Array.from(set).sort();
+  }, [registrations]);
+
+  // Filter registrations
+  const filteredRegistrations = useMemo(() => {
+    return registrations.filter((r) => {
+      const answers = r.answers as Record<string, any>;
+      const pName = answers._fixed?.panchayath_name || "";
+      if (panchayathFilter !== "all" && pName !== panchayathFilter) return false;
+
+      if (statusFilter !== "all" && verificationEnabled) {
+        const status = (r as any).verification_status;
+        if (statusFilter === "pending" && status === "verified") return false;
+        if (statusFilter === "verified" && status !== "verified") return false;
+      }
+      return true;
+    });
+  }, [registrations, panchayathFilter, statusFilter, verificationEnabled]);
 
   const handleExport = () => {
     setIsExporting(true);
     try {
-      exportRegistrationsToXlsx(registrations, questions, programName);
+      exportRegistrationsToXlsx(filteredRegistrations, questions, programName);
     } finally {
       setIsExporting(false);
     }
@@ -138,7 +174,7 @@ export function RegistrationsTable({
             </div>
             <Button 
               onClick={handleExport} 
-              disabled={registrations.length === 0 || isExporting}
+              disabled={filteredRegistrations.length === 0 || isExporting}
               size="sm"
               className="w-full sm:w-auto"
             >
@@ -157,7 +193,44 @@ export function RegistrationsTable({
           </div>
         </CardHeader>
         <CardContent>
-          {registrations.length === 0 ? (
+          {/* Filters */}
+          {registrations.length > 0 && (
+            <div className="flex flex-wrap items-center gap-3 mb-4 p-3 rounded-lg border bg-muted/30">
+              <Filter className="h-4 w-4 text-muted-foreground" />
+              <Select value={panchayathFilter} onValueChange={setPanchayathFilter}>
+                <SelectTrigger className="w-40 h-8 text-xs">
+                  <SelectValue placeholder="Panchayath" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">All Panchayaths</SelectItem>
+                  {panchayaths.map((p) => (
+                    <SelectItem key={p} value={p}>{p}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              {verificationEnabled && (
+                <Select value={statusFilter} onValueChange={setStatusFilter}>
+                  <SelectTrigger className="w-36 h-8 text-xs">
+                    <SelectValue placeholder="Status" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">All Status</SelectItem>
+                    <SelectItem value="verified">Verified</SelectItem>
+                    <SelectItem value="pending">Pending</SelectItem>
+                  </SelectContent>
+                </Select>
+              )}
+              <span className="text-xs text-muted-foreground ml-auto">
+                {filteredRegistrations.length} of {registrations.length}
+              </span>
+            </div>
+          )}
+
+          {filteredRegistrations.length === 0 && registrations.length > 0 ? (
+            <div className="text-center py-8 text-muted-foreground">
+              <p>No registrations match the selected filters.</p>
+            </div>
+          ) : registrations.length === 0 ? (
             <div className="text-center py-8 text-muted-foreground">
               <Users className="h-12 w-12 mx-auto mb-4 opacity-50" />
               <p>No registrations yet.</p>
@@ -180,7 +253,7 @@ export function RegistrationsTable({
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {registrations.map((registration, index) => {
+                  {filteredRegistrations.map((registration, index) => {
                     const verification = verificationEnabled ? getVerificationStatus(registration) : null;
                     const StatusIcon = verification?.icon;
 

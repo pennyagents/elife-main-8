@@ -82,6 +82,9 @@ export default function AdminDashboard() {
   }
 
   const getDisplayName = () => {
+    if (adminData?.full_name) {
+      return adminData.full_name;
+    }
     if (adminToken && divisionInfo) {
       return `Admin - ${divisionInfo.name}`;
     }
