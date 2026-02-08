@@ -93,8 +93,10 @@ export default function PennyekartAgentHierarchy() {
     fetchWards();
   }, [filters.panchayath_id]);
 
-  // Check permissions - only Pennyekart division admins or super admins
-  const isPennyekartAdmin = adminData?.division_id === PENNYEKART_DIVISION_ID;
+  // Check permissions - only Pennyekart division admins, admins with access_all_divisions, or super admins
+  const isPennyekartAdmin = adminData?.division_id === PENNYEKART_DIVISION_ID
+    || adminData?.access_all_divisions
+    || adminData?.additional_division_ids?.includes(PENNYEKART_DIVISION_ID);
   
   if (!isSuperAdmin && !isPennyekartAdmin) {
     return <Navigate to="/unauthorized" replace />;
