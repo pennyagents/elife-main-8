@@ -48,7 +48,7 @@ interface Panchayath {
 const PENNYEKART_DIVISION_ID = "e108eb84-b8a2-452d-b0d4-350d0c90303b";
 
 export default function PennyekartAgentHierarchy() {
-  const { isAdmin, isSuperAdmin, adminData } = useAuth();
+  const { isAdmin, isSuperAdmin, adminData, isLoading: authLoading } = useAuth();
   const [filters, setFilters] = useState<AgentFilters>({});
   const [panchayaths, setPanchayaths] = useState<Panchayath[]>([]);
   const [wards, setWards] = useState<string[]>([]);
@@ -94,6 +94,16 @@ export default function PennyekartAgentHierarchy() {
   }, [filters.panchayath_id]);
 
   // Check permissions - only Pennyekart division admins, admins with access_all_divisions, or super admins
+  if (authLoading) {
+    return (
+      <Layout>
+        <div className="container py-8 flex items-center justify-center min-h-[400px]">
+          <Loader2 className="h-8 w-8 animate-spin text-primary" />
+        </div>
+      </Layout>
+    );
+  }
+
   const isPennyekartAdmin = adminData?.division_id === PENNYEKART_DIVISION_ID
     || adminData?.access_all_divisions
     || adminData?.additional_division_ids?.includes(PENNYEKART_DIVISION_ID);
