@@ -118,11 +118,20 @@ serve(async (req) => {
 
     // GET - List agents
     if (req.method === "GET") {
-      const { data, error } = await supabase
+      const panchayathFilter = url.searchParams.get("panchayath_id");
+      
+      let query = supabase
         .from("pennyekart_agents")
         .select("*, panchayath:panchayaths(name)")
         .order("role", { ascending: true })
         .order("name", { ascending: true });
+
+      if (panchayathFilter) {
+        // Match agents by home panchayath OR by responsible_panchayath_ids
+        query = query.or(`panchayath_id.eq.${panchayathFilter},responsible_panchayath_ids.cs.{${panchayathFilter}}`);
+      }
+
+      const { data, error } = await query;
 
       if (error) throw error;
       return new Response(JSON.stringify({ data }), {

@@ -67,7 +67,8 @@ export function usePennyekartAgents(filters?: AgentFilters) {
         .order("name", { ascending: true });
 
       if (filters?.panchayath_id) {
-        query = query.eq("panchayath_id", filters.panchayath_id);
+        // Match agents by their home panchayath OR by responsible_panchayath_ids (for team leaders managing multiple panchayaths)
+        query = query.or(`panchayath_id.eq.${filters.panchayath_id},responsible_panchayath_ids.cs.{${filters.panchayath_id}}`);
       }
       if (filters?.ward) {
         query = query.eq("ward", filters.ward);
